@@ -36,7 +36,7 @@ class Pipeline:
         self._connect_to_client()
         self._delete_and_add_collections(index_name)
         self._setup_retriever(index_name)
-        self._ingest_docs("/home/jonot480/Documents/pipeline_docs_test")
+        self._ingest_docs("/home/jonot480/Documents/pipeline_docs_test") #you can change this to the openwebui docs folder if you just want to iterate through those docs...this is just a local test 
 
         index_name="Pipeline_test"    
 
@@ -45,6 +45,8 @@ class Pipeline:
         Connect to the Weaviate and Ollama clients.
         """
         try:
+            #if you don't have weaviate running in docker, run the below...this also assumes you have nomic-embed-text downloaded and you're running ollama 
+            #docker run -p 8081:8080 -p 50051:50051 -e ENABLE_MODULES=text2vec-ollama cr.weaviate.io/semitechnologies/weaviate:1.25.1
             self.client = weaviate.Client("http://localhost:8081")#connection
             self.weaviate_client = weaviate.connect_to_local("localhost", "8081")#client
             logger.info("Connection to Weaviate successful")
@@ -66,7 +68,7 @@ class Pipeline:
                 index_name,
                 vectorizer_config=Configure.Vectorizer.text2vec_ollama(
                     model="nomic-embed-text",
-                    api_endpoint="http://host.docker.internal:11434",
+                    api_endpoint="http://host.docker.internal:11434", #change to localhost if you have ollama running outside of docker 
                 )
             )
             logger.info(f"Collection {index_name} successfully created!")
